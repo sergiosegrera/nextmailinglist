@@ -4,8 +4,9 @@ This is a simple mailing list site built with Next 13. Users can enter their ema
 
 ## TODO
 
+- [x] Add a unsubscribe endpoint
 - [ ] Finish the GoogleAnalytics component
-- [ ] Add a unsubscribe endpoint
+- [ ] Add success state to the forms
 
 ## Getting Started
 
@@ -23,4 +24,4 @@ Then, to start the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the site.

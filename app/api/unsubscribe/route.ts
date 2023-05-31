@@ -9,16 +9,8 @@ export async function GET(request: NextRequest) {
     return new Response("Missing id", { status: 400 });
   }
 
-  // Id string to number
-  let idNumber;
-  try {
-    idNumber = parseInt(id, 10);
-  } catch (error) {
-    return new Response("Invalid id", { status: 400 });
-  }
-
   const user = await prisma.user.findUnique({
-    where: { id: idNumber },
+    where: { id },
   });
 
   if (!user) {
@@ -26,7 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   await prisma.user.delete({
-    where: { id: idNumber },
+    where: { id },
   });
 
   return new Response("User successfully unsubscribed", { status: 200 });
