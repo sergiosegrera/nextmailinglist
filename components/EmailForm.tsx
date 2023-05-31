@@ -3,18 +3,30 @@ import { PrismaClient } from "@prisma/client";
 async function saveEmail(data: FormData) {
   "use server";
 
-  const email = data.get("email");
+  const email = data.get("email")?.toString();
 
   if (!email) {
-    return;
+    return new Response("Missing email", { status: 400 });
   }
 
   const prisma = new PrismaClient();
+
+  // Check if user already exists
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (user) {
+    return new Response("User already exists", { status: 400 });
+  }
+
   await prisma.user.create({
     data: {
-      email: email.toString(),
+      email,
     },
   });
+
+  return new Response("User successfully subscribed", { status: 200 });
 }
 
 export default function EmailForm() {
