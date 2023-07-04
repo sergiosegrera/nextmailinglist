@@ -5,8 +5,8 @@ This is a simple mailing list site built with Next 13. Users can enter their ema
 ## TODO
 
 - [x] Add a unsubscribe endpoint
-- [ ] Finish the GoogleAnalytics component
-- [ ] Add success state to the forms
+- [x] Finish the GoogleAnalytics component
+- [x] Add success state to the forms
 
 ## Getting Started
 
