@@ -1,48 +1,47 @@
-import { PrismaClient } from "@prisma/client";
-
-async function saveEmail(data: FormData) {
-  "use server";
-
-  const email = data.get("email")?.toString();
-
-  if (!email) {
-    return new Response("Missing email", { status: 400 });
-  }
-
-  const prisma = new PrismaClient();
-
-  // Check if user already exists
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (user) {
-    return new Response("User already exists", { status: 400 });
-  }
-
-  await prisma.user.create({
-    data: {
-      email,
-    },
-  });
-
-  return new Response("User successfully subscribed", { status: 200 });
-}
+"use client";
+import { useState, FormEvent } from "react";
+import { saveEmail } from "@/actions/actions";
 
 export default function EmailForm() {
+  const [pending, setPending] = useState(false);
+  const [status, setStatus] = useState<"Save" | "Saving..." | "Saved!">("Save");
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPending(true);
+    setStatus("Saving...");
+
+    const formData = new FormData(event.currentTarget);
+
+    const res = await saveEmail(formData);
+
+    if (res) {
+      setStatus("Saved!");
+      setPending(false);
+      return;
+    }
+  };
+
   return (
-    <form className="flex items-center gap-2" action={saveEmail}>
+    <form className="flex items-center gap-2" onSubmit={handleSubmit}>
       <input
         type="email"
         name="email"
         id="email"
-        className="p-2 rounded-sm bg-gray-300"
+        className={`p-2 rounded-sm bg-gray-300 text-gray-900 ${
+          pending ? "animate-pulse" : ""
+        }`}
+        disabled={pending}
+        placeholder="Enter your email"
       />
       <button
         type="submit"
-        className="p-2 bg-green-500 rounded-sm hover:bg-green-600 text-white"
+        className={`p-2 bg-green-500 rounded-sm hover:bg-green-600 text-white ${
+          pending ? "animate-pulse" : ""
+        }`}
+        disabled={pending}
       >
-        Submit
+        {status}
       </button>
     </form>
   );
