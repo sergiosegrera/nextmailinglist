@@ -1,8 +1,9 @@
+// TODO: Better server side validation & responses
+
 "use server";
 
 import { PrismaClient } from "@prisma/client";
 
-// This is the server action that will be called when the form is submitted
 export async function saveEmail(data: FormData) {
   const email = data.get("email")?.toString();
 
@@ -25,6 +26,30 @@ export async function saveEmail(data: FormData) {
     data: {
       email,
     },
+  });
+
+  return true;
+}
+
+export async function unsubscribe(data: FormData) {
+  const prisma = new PrismaClient();
+
+  const id = data.get("id")?.toString();
+
+  if (!id) {
+    return false;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  await prisma.user.delete({
+    where: { id },
   });
 
   return true;
